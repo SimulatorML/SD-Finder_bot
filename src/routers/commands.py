@@ -1,0 +1,37 @@
+from aiogram import Router, types
+from aiogram.filters import Command, CommandObject
+from loguru import logger
+
+from src.routers.schemas import FinderResult
+from src.services.base import ServiceFactory
+from src.utils.markup import main_menu
+
+router = Router()
+
+
+@router.message(Command(commands=["start"]))
+async def welcome(message: types.Message) -> None:
+    await message.answer(
+        f"Hi, {message.from_user.full_name}!\n\nWhat do you want to explore today?", reply_markup=main_menu
+    )
+
+
+@router.message(Command(commands=["help"]))
+async def help(message: types.Message) -> None:
+    await message.answer(
+        "I'm your ML System Design Assistant. What do you want to explore today?",
+        reply_markup=main_menu,
+    )
+
+
+@router.message(Command(commands=["find"]))
+async def find(message: types.Message, command: CommandObject, service_factory: ServiceFactory) -> None:
+    request = command.args
+    logger.info(f"Request: {request}")
+
+    service = service_factory.get_service("design_finder")
+    result: FinderResult = await service.process_request(request, message.from_user.id)
+
+    logger.info(f"Result: {result}")
+
+    await message.answer(result, parse_mode="markdown", disable_web_page_preview=True)

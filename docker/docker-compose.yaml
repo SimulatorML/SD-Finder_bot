@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  finder:
+    container_name: tg-bot
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: tg-bot:latest
+    command: python -m src.app.bot
