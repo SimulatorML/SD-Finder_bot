@@ -8,3 +8,9 @@ services:
       dockerfile: docker/Dockerfile
     image: tg-bot:latest
     command: python -m src.app.bot
+    networks:
+      - mlsd_network
+
+networks:
+  mlsd_network:
+    external: true
