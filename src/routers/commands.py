@@ -1,4 +1,5 @@
-from aiogram import Router, types
+from aiogram import Bot, Router, types
+from aiogram.enums.chat_action import ChatAction
 from aiogram.filters import Command, CommandObject
 from loguru import logger
 
@@ -25,7 +26,9 @@ async def help(message: types.Message) -> None:
 
 
 @router.message(Command(commands=["find"]))
-async def find(message: types.Message, command: CommandObject, service_factory: ServiceFactory) -> None:
+async def find(message: types.Message, command: CommandObject, bot: Bot, service_factory: ServiceFactory) -> None:
+    await bot.send_chat_action(chat_id=message.chat.id, action=ChatAction.TYPING)
+
     request = command.args
     logger.info(f"Request: {request}")
 

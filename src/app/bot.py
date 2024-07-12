@@ -27,6 +27,7 @@ class AssistantBot:
         self.dp.include_router(router_callbacks)
 
         self.dp["service_factory"] = service_factory
+        self.dp["bot"] = self.bot
 
     async def start(self) -> None:
         """

@@ -1,6 +1,7 @@
 import asyncio
 
-from aiogram import F, Router, types
+from aiogram import Bot, F, Router, types
+from aiogram.enums.chat_action import ChatAction
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from loguru import logger
@@ -14,7 +15,6 @@ router = Router()
 
 @router.callback_query(MenuCallback.filter(F.feature != "back_menu"))
 async def handle_service(callback_query: CallbackQuery, callback_data: MenuCallback, state: FSMContext) -> None:
-    # bot = callback_query.bot
     service_name = callback_data.feature
     await state.update_data(service_name=service_name)
     await state.set_state(RequestState.request)
@@ -35,7 +35,9 @@ async def back_to_main_menu(callback_query: CallbackQuery, state: FSMContext) ->
 
 
 @router.message(RequestState.request)
-async def handle_request(message: types.Message, state: FSMContext, service_factory: ServiceFactory) -> None:
+async def handle_request(message: types.Message, state: FSMContext, bot: Bot, service_factory: ServiceFactory) -> None:
+    await bot.send_chat_action(chat_id=message.chat.id, action=ChatAction.TYPING)
+
     request = message.text
     await state.update_data(request=request)
     data = await state.get_data()
