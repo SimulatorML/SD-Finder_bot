@@ -7,7 +7,9 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
     image: tg-bot:latest
-    command: python -m src.app.bot
+    platform: linux/amd64
+    environment:
+      - ENV=${ENV}
     networks:
       - mlsd_network
 
