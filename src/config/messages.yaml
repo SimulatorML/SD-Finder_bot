@@ -1,0 +1,19 @@
+welcome: |
+  Hi, {}!
+
+  What do you want to explore today?
+
+help: |
+  I'm your ML System Design Assistant. What do you want to explore today?
+
+main_menu: |
+  What do you want to do?
+
+request_finder_input: |
+  Tell me what you're looking for!
+
+request_followup_finder_input: |
+  Found what you needed? Don't hesitate to ask for more!
+
+finder_error: |
+  Something went wrong. Please try again

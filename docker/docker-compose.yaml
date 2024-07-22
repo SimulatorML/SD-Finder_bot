@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  tg-bot:
+    container_name: tg-bot
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: tg-bot:latest
+    platform: linux/amd64
+    environment:
+      - ENV=${ENV}
+    networks:
+      - mlsd_network
+
+networks:
+  mlsd_network:
+    external: true
