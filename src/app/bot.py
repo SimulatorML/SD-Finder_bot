@@ -1,6 +1,6 @@
 import asyncio
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, Router
 from aiogram.types import BotCommand
 from loguru import logger
 
@@ -12,7 +12,9 @@ from src.services.finder import FinderService
 
 
 class AssistantBot:
-    def __init__(self, bot_token: str, service_factory: ServiceFactory) -> None:
+    def __init__(
+        self, bot_token: str, service_factory: ServiceFactory, router_commands: Router, router_callbacks: Router
+    ) -> None:
         """
         Initializes the object and registers the startup and shutdown events.
         Also includes the specified routers for commands, callbacks, and dialog.
@@ -62,5 +64,10 @@ if __name__ == "__main__":
         }
     )
 
-    bot_runner = AssistantBot(bot_token=settings.bot_token, service_factory=service_factory)
-    asyncio.run(bot_runner.start())
+    bot = AssistantBot(
+        bot_token=settings.bot_token,
+        service_factory=service_factory,
+        router_commands=router_commands,
+        router_callbacks=router_callbacks,
+    )
+    asyncio.run(bot.start())
