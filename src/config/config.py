@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     bot_token: str = os.getenv("BOT_TOKEN")
     finder_api_url: str = os.getenv("FINDER_API_URL")
     messages_yaml_filepath: Path = Path("src/config/messages.yaml")
+    documents_per_page: int = 3
 
 
 class Messages:
