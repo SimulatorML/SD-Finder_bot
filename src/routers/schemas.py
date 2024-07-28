@@ -34,12 +34,20 @@ class BaseResult(BaseModel):
 
 class FinderResult(BaseResult):
     documents: list[DocumentSchema]
+    responses: list[str]
 
 
 class MenuCallback(CallbackData, prefix="menu"):
     feature: str
 
 
+class PaginationMenu(CallbackData, prefix="page"):
+    page: str
+
+
 class RequestState(StatesGroup):
     service_name = State()
     request = State()
+    responses = State()
+    current_page = State()
+    total_pages = State()
