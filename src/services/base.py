@@ -5,7 +5,11 @@ from src.routers.schemas import BaseResult
 
 class BaseService(ABC):
     @abstractmethod
-    async def process_request(self, request: str, user_id: int) -> BaseResult:
+    async def api_call(self, request: str, user_id: int) -> BaseResult:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def process_request(self) -> None:
         raise NotImplementedError
 
 
