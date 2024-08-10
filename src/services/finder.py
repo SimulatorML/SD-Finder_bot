@@ -17,7 +17,7 @@ class FinderService(BaseService):
         self.base_url = base_url
 
     async def api_call(self, request: str, user_id: int) -> FinderResult:
-        payload = FindRequest(user_id=user_id, request=request, source="telegram_bot")
+        payload = FindRequest(user_id=user_id, request=request, source="telegram")
         async with aiohttp.ClientSession() as session:
             async with session.post(f"{self.base_url}/api/v1/find", json=payload.model_dump()) as response:
                 result = await response.json()
