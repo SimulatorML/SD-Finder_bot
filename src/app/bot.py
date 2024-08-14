@@ -9,6 +9,7 @@ from src.routers.callbacks import router as router_callbacks
 from src.routers.commands import router as router_commands
 from src.services.base import ServiceFactory
 from src.services.finder import FinderService
+from src.services.system import SystemService
 
 
 class AssistantBot:
@@ -58,9 +59,11 @@ class AssistantBot:
 
 if __name__ == "__main__":
     design_finder_service = FinderService(base_url=settings.finder_api_url)
+    system_service = SystemService(base_url=settings.finder_api_url)
     service_factory = ServiceFactory(
         {
-            "design_finder": design_finder_service,
+            "finder": design_finder_service,
+            "system": system_service,
         }
     )
 

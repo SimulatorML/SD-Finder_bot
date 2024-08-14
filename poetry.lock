@@ -225,6 +225,20 @@ files = [
 ]
 
 [[package]]
+name = "expiringdict"
+version = "1.2.2"
+description = "Dictionary with auto-expiring values for caching purposes"
+optional = false
+python-versions = "*"
+files = [
+    {file = "expiringdict-1.2.2-py3-none-any.whl", hash = "sha256:09a5d20bc361163e6432a874edd3179676e935eb81b925eccef48d409a8a45e8"},
+    {file = "expiringdict-1.2.2.tar.gz", hash = "sha256:300fb92a7e98f15b05cf9a856c1415b3bc4f2e132be07daa326da6414c23ee09"},
+]
+
+[package.extras]
+tests = ["coverage", "coveralls", "dill", "mock", "nose"]
+
+[[package]]
 name = "filelock"
 version = "3.15.3"
 description = "A platform independent file lock."
@@ -907,4 +921,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.*"
-content-hash = "50ff0f59cddbf72c24a2c3ccc86278a140b76435d4f22a5b07bc32e8da4da9c9"
+content-hash = "250c194f78211f223dff7187610699dac3dc9e4416c2e3068e9d1d59148d1a52"

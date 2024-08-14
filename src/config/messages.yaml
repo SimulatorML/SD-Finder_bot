@@ -17,3 +17,9 @@ request_followup_finder_input: |
 
 finder_error: |
   Something went wrong. Please try again
+
+finder_pagination_expired_error: |
+  The data is no longer available. Please try again.
+
+feedback_thanks_message: |
+  Thank you for the feedback!
