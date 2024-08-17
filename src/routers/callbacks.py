@@ -59,10 +59,10 @@ async def pagination(
             message=callback_query.message, query_id=query_id, page=page, show_feedback_buttons=show_feedback_buttons
         )
     except KeyError:
-        logger.info(f"Pagination expired for {query_id}")
+        logger.info(f"Could not find pagination data for {query_id}")
         await callback_query.answer(messages.finder_pagination_expired_error)
     except Exception as exp:
-        logger.error(f"Error while handling finder request: {exp}")
+        logger.error(f"Error while handling pagination for {query_id}: {exp}")
         await callback_query.answer(messages.finder_error)
 
 

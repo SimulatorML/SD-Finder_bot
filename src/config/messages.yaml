@@ -19,7 +19,7 @@ finder_error: |
   Something went wrong. Please try again
 
 finder_pagination_expired_error: |
-  The data is no longer available. Please try again.
+  Something went wrong :( Please, repeat your request.
 
 feedback_thanks_message: |
   Thank you for the feedback!

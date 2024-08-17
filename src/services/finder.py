@@ -20,16 +20,35 @@ class FinderService(BaseService):
         self.base_url = base_url
         self.pagination_data = ExpiringDict(max_len=1000, max_age_seconds=60 * 60 * 24)
 
+    async def _fetch(self, method: str, url: str, json_data: dict | None = None) -> dict:
+        try:
+            async with aiohttp.ClientSession() as session:
+                if method.lower() == "post":
+                    async with session.post(url, json=json_data) as response:
+                        response.raise_for_status()
+                        return await response.json()
+                elif method.lower() == "get":
+                    async with session.get(url) as response:
+                        response.raise_for_status()
+                        return await response.json()
+        except aiohttp.ClientError as e:
+            logger.error(f"HTTP request failed: {e}")
+            raise
+
     async def _find_documents(self, request: str, user_id: int) -> FinderResult:
         payload = FindRequest(user_id=user_id, request=request, source="telegram")
-        async with aiohttp.ClientSession() as session:
-            async with session.post(f"{self.base_url}/api/v1/find", json=payload.model_dump()) as response:
-                result = await response.json()
-                docs = [DocumentSchema(**doc) for doc in result["documents"]]
-                result["response"] = ""
-                result["responses"] = self._prepare_responses(docs)
+        result = await self._fetch("post", f"{self.base_url}/api/v1/find", json_data=payload.model_dump())
+        return await self._prepare_finder_result(result)
 
-                return FinderResult(**result)
+    async def _get_results_by_query_id(self, query_id: uuid.UUID) -> FinderResult:
+        result = await self._fetch("get", f"{self.base_url}/api/v1/query/{query_id}")
+        return await self._prepare_finder_result(result)
+
+    async def _prepare_finder_result(self, result: dict) -> FinderResult:
+        docs = [DocumentSchema(**doc) for doc in result["documents"]]
+        result["response"] = ""
+        result["responses"] = self._prepare_responses(docs)
+        return FinderResult(**result)
 
     def _prepare_responses(self, docs: list[DocumentSchema]) -> list[str]:
         responses = []
@@ -74,10 +93,17 @@ class FinderService(BaseService):
     async def paginate(
         self, message: types.Message, query_id: uuid.UUID, page: int, show_feedback_buttons: bool
     ) -> None:
-        if query_id not in self.pagination_data:
-            raise KeyError(f"Pagination data for query_id {query_id} has expired or does not exist")
-
         responses = self.pagination_data.get(query_id)
+        if not responses:
+            logger.info(f"Fetching data for query_id {query_id} from finder service...")
+            result = await self._get_results_by_query_id(query_id)
+            if not result.responses:
+                raise KeyError(f"Pagination data for query_id {query_id} has expired or does not exist")
+
+            logger.info(f"Fetched data for query_id {query_id} from finder service")
+            self.pagination_data[query_id] = result.responses
+            responses = result.responses
+
         response_text = responses[page - 1]
         total_pages = len(responses)
 
@@ -95,13 +121,6 @@ class FinderService(BaseService):
         )
 
     async def process_feedback(self, query_id: uuid.UUID, label: str) -> None:
-        if label == "1":
-            label = "like"
-        else:
-            label = "dislike"
-
+        label = "like" if label == "1" else "dislike"
         payload = Feedback(query_id=query_id, label=label)
-
-        async with aiohttp.ClientSession() as session:
-            await session.post(f"{self.base_url}/api/v1/feedback", json=payload.model_dump())
-            return
+        await self._fetch("post", f"{self.base_url}/api/v1/feedback", json_data=payload.model_dump())
