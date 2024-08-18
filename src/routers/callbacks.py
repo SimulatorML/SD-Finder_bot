@@ -48,13 +48,14 @@ async def handle_request(message: types.Message, state: FSMContext, bot: Bot, se
 async def pagination(
     callback_query: CallbackQuery, callback_data: PaginationMenu, service_factory: ServiceFactory
 ) -> None:
-    try:
-        query_id = callback_data.query_id
-        page = int(callback_data.page)
-        show_feedback_buttons = callback_data.show_feedback_buttons
-        service_name = callback_data.service_name
-        service = service_factory.get_service(service_name)
+    query_id = callback_data.query_id
+    page = int(callback_data.page)
+    show_feedback_buttons = callback_data.show_feedback_buttons
+    service_name = callback_data.service_name
 
+    service = service_factory.get_service(service_name)
+
+    try:
         await service.paginate(
             message=callback_query.message, query_id=query_id, page=page, show_feedback_buttons=show_feedback_buttons
         )

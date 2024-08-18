@@ -18,7 +18,9 @@ class FinderService(BaseService):
     def __init__(self, base_url: str) -> None:
         self.service_name = "finder"
         self.base_url = base_url
-        self.pagination_data = ExpiringDict(max_len=1000, max_age_seconds=60 * 60 * 24)
+        self.pagination_data = ExpiringDict(
+            max_len=settings.pagination_max_len, max_age_seconds=settings.pagination_max_age_seconds
+        )
 
     async def _fetch(self, method: str, url: str, json_data: dict | None = None) -> dict:
         try:
@@ -121,6 +123,7 @@ class FinderService(BaseService):
         )
 
     async def process_feedback(self, query_id: uuid.UUID, label: str) -> None:
-        label = "like" if label == "1" else "dislike"
+        positive_label = "1"
+        label = "like" if label == positive_label else "dislike"
         payload = Feedback(query_id=query_id, label=label)
         await self._fetch("post", f"{self.base_url}/api/v1/feedback", json_data=payload.model_dump())

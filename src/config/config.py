@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     finder_api_url: str = os.getenv("FINDER_API_URL")
     messages_yaml_filepath: Path = Path("src/config/messages.yaml")
     documents_per_page: int = 3
+    pagination_max_len: int = 1000
+    pagination_max_age_seconds = 60 * 60 * 24
 
 
 class Messages:
