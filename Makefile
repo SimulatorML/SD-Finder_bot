@@ -17,3 +17,6 @@ restart:
 
 logs:
 	docker compose -f $(DOCKER_COMPOSE_FILE) logs
+
+lint:
+	poetry run pre-commit
