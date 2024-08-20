@@ -17,3 +17,9 @@ request_followup_finder_input: |
 
 finder_error: |
   Something went wrong. Please try again
+
+finder_pagination_expired_error: |
+  Something went wrong :( Please, repeat your request.
+
+feedback_thanks_message: |
+  Thank you for the feedback!

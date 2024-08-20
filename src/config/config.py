@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     bot_token: str = os.getenv("BOT_TOKEN")
     finder_api_url: str = os.getenv("FINDER_API_URL")
     messages_yaml_filepath: Path = Path("src/config/messages.yaml")
+    documents_per_page: int = 3
+    pagination_max_len: int = 1000
+    pagination_max_age_seconds: int = 60 * 60 * 24
 
 
 class Messages:

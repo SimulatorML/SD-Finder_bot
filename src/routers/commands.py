@@ -6,14 +6,18 @@ from loguru import logger
 from src.config import messages
 from src.routers.schemas import FinderResult
 from src.services.base import ServiceFactory
+from src.services.system import SystemService
 from src.utils.markup import main_menu
 
 router = Router()
 
 
 @router.message(Command(commands=["start"]))
-async def welcome(message: types.Message) -> None:
+async def welcome(message: types.Message, service_factory: ServiceFactory) -> None:
     await message.answer(messages.welcome.format(message.from_user.full_name), reply_markup=main_menu)
+
+    system_service: SystemService = service_factory.get_service("system")
+    await system_service.register_user(telegram_id=message.from_user.id, username=message.from_user.username)
 
 
 @router.message(Command(commands=["help"]))
@@ -32,7 +36,7 @@ async def find(message: types.Message, command: CommandObject, bot: Bot, service
         request = command.args
         logger.info(f"Request: {request}")
 
-        service = service_factory.get_service("design_finder")
+        service = service_factory.get_service("finder")
         result: FinderResult = await service.process_request(request, message.from_user.id)
 
         logger.info(f"Result: {result}")
